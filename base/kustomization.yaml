@@ -6,6 +6,11 @@ resources:
   - service.yaml
   - httproute.yaml
 
-commonLabels:
-  app.kubernetes.io/managed-by: argocd
-  app.kubernetes.io/part-of: assessment-app
+# commonLabels modifie aussi le selector du Service, mais pas les pods
+# du Rollout (CRD non natif) → endpoints vides. On applique les labels
+# sur les métadonnées seulement, pas sur les selectors.
+labels:
+  - pairs:
+      app.kubernetes.io/managed-by: argocd
+      app.kubernetes.io/part-of: assessment-app
+    includeSelectors: false
