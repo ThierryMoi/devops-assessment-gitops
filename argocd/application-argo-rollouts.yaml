@@ -9,7 +9,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/argoproj-labs/argo-rollouts.git
+    repoURL: https://github.com/argoproj/argo-rollouts.git
     targetRevision: v1.8.0
     path: manifests/cluster-install
 
