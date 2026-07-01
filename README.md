@@ -16,6 +16,10 @@ devops-assessment-gitops/
 │   └── prod/                    ← Prod: 3 replicas, assessment.jaali.dev
 │       └── kustomization.yaml
 │
+├── gateway/                     ← ReferenceGrant (envoy-gateway-system)
+│   ├── reference-grant.yaml
+│   └── kustomization.yaml
+│
 ├── argocd/
 │   └── application-prod.yaml    ← Auto-sync enabled
 │

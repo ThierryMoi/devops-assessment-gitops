@@ -11,10 +11,13 @@ metadata:
 spec:
   project: default
 
-  source:
-    repoURL: https://github.com/ThierryMoi/devops-assessment-gitops.git
-    targetRevision: main
-    path: overlays/prod
+  sources:
+    - repoURL: https://github.com/ThierryMoi/devops-assessment-gitops.git
+      targetRevision: main
+      path: overlays/prod
+    - repoURL: https://github.com/ThierryMoi/devops-assessment-gitops.git
+      targetRevision: main
+      path: gateway
 
   destination:
     server: https://kubernetes.default.svc

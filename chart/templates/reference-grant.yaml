@@ -1,0 +1,17 @@
+{{- if .Values.gateway.referenceGrant.enabled }}
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: {{ include "assessment-app.fullname" . }}-routes
+  namespace: {{ .Values.gateway.parentRef.namespace }}
+  labels:
+    {{- include "assessment-app.labels" . | nindent 4 }}
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: {{ .Release.Namespace }}
+  to:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+{{- end }}

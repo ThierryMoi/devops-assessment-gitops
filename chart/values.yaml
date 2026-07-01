@@ -49,6 +49,8 @@ gateway:
   parentRef:
     name: jaali-gateway
     namespace: envoy-gateway-system
+  referenceGrant:
+    enabled: true
 
 # ──────────────────────────────────────────────
 # Probes
