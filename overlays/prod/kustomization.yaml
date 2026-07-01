@@ -8,7 +8,7 @@ resources:
   - ../../base
 
 # Jenkins CI updates newTag after each build
-# via: sed -i 's|newTag: "prod-dde39439"
+# via: sed -i 's|newTag:.*|newTag: "prod-COMMIT_SHA"|'
 images:
   - name: harbor.jaali.dev/assessment/assessment-app
     newTag: "prod-dde39439"

@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: assessment-app
 spec:
   parentRefs:
-    - name: main-gateway
+    - name: jaali-gateway
       namespace: envoy-gateway-system
   hostnames:
     - "assessment.jaali.dev"

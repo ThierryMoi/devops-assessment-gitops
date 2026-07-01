@@ -7,9 +7,9 @@ image:
   pullPolicy: IfNotPresent
 
 # ──────────────────────────────────────────────
-# Deployment
+# Deployment (production defaults)
 # ──────────────────────────────────────────────
-replicaCount: 2
+replicaCount: 3
 
 strategy:
   type: RollingUpdate
@@ -19,11 +19,11 @@ strategy:
 
 resources:
   requests:
-    cpu: 50m
+    cpu: 100m
     memory: 64Mi
   limits:
-    cpu: 200m
-    memory: 128Mi
+    cpu: 500m
+    memory: 256Mi
 
 # ──────────────────────────────────────────────
 # Service
@@ -34,13 +34,20 @@ service:
   targetPort: 8080
 
 # ──────────────────────────────────────────────
+# Namespace
+# ──────────────────────────────────────────────
+namespace:
+  create: true
+  name: assessment-app-prod
+
+# ──────────────────────────────────────────────
 # Gateway API (HTTPRoute)
 # ──────────────────────────────────────────────
 gateway:
   enabled: true
   hostname: "assessment.jaali.dev"
   parentRef:
-    name: main-gateway
+    name: jaali-gateway
     namespace: envoy-gateway-system
 
 # ──────────────────────────────────────────────
@@ -51,10 +58,12 @@ probes:
     path: /healthz
     initialDelaySeconds: 5
     periodSeconds: 15
+    failureThreshold: 3
   readiness:
     path: /healthz
     initialDelaySeconds: 3
     periodSeconds: 5
+    failureThreshold: 2
 
 # ──────────────────────────────────────────────
 # Security

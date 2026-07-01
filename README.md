@@ -54,19 +54,26 @@ kubectl apply -f argocd/application-prod.yaml
 
 ## Helm Chart Usage
 
-The chart can be used standalone or packaged as an OCI artifact in Harbor:
+Alternative to Kustomize — install standalone or package as OCI artifact in Harbor:
 
 ```bash
-# Local install
-helm install assessment-app ./chart -n assessment-app-prod --create-namespace \
-  --set image.tag="prod-abc12345" \
-  --set replicaCount=3 \
-  --set gateway.hostname="assessment.jaali.dev"
+export KUBECONFIG=/path/to/jaali.yaml
+
+# Install (matches prod overlay defaults)
+helm upgrade --install assessment-app ./chart \
+  -n assessment-app-prod \
+  --create-namespace \
+  --set image.tag="prod-abc12345"
+
+# Dry-run
+helm template assessment-app ./chart --set image.tag="prod-abc12345"
 
 # Package and push to Harbor (OCI)
 helm package ./chart
-helm push assessment-app-0.1.0.tgz oci://harbor.jaali.dev/assessment
+helm push assessment-app-0.2.0.tgz oci://harbor.jaali.dev/assessment
 ```
+
+> **Note:** ArgoCD uses Kustomize (`overlays/prod/`) by default. The Helm chart is for manual installs, rollbacks, or Harbor OCI distribution.
 
 ## Rollback
 
