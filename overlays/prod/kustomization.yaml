@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: assessment-app-prod
+
+resources:
+  - ../../base
+
+# Jenkins CI updates newTag after each build
+# via: sed -i 's|newTag:.*|newTag: "prod-COMMIT_SHA"|'
+images:
+  - name: harbor.jaali.dev/assessment/assessment-app
+    newTag: "prod-00000000"
+
+patches:
+  - target:
+      kind: Deployment
+      name: assessment-app
+    patch: |
+      - op: replace
+        path: /spec/replicas
+        value: 3
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/cpu
+        value: "100m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/cpu
+        value: "500m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/limits/memory
+        value: "256Mi"

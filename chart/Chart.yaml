@@ -1,0 +1,15 @@
+apiVersion: v2
+name: assessment-app
+description: Helm chart for the Angular Assessment application
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+maintainers:
+  - name: Hema
+    email: hemathierry@gmail.com
+
+keywords:
+  - angular
+  - assessment
+  - frontend

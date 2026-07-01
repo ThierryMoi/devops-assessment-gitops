@@ -1,0 +1,80 @@
+# ──────────────────────────────────────────────
+# Image
+# ──────────────────────────────────────────────
+image:
+  repository: harbor.jaali.dev/assessment/assessment-app
+  tag: "prod-00000000"
+  pullPolicy: IfNotPresent
+
+# ──────────────────────────────────────────────
+# Deployment
+# ──────────────────────────────────────────────
+replicaCount: 2
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+# ──────────────────────────────────────────────
+# Service
+# ──────────────────────────────────────────────
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# ──────────────────────────────────────────────
+# Gateway API (HTTPRoute)
+# ──────────────────────────────────────────────
+gateway:
+  enabled: true
+  hostname: "assessment.jaali.dev"
+  parentRef:
+    name: main-gateway
+    namespace: envoy-gateway-system
+
+# ──────────────────────────────────────────────
+# Probes
+# ──────────────────────────────────────────────
+probes:
+  liveness:
+    path: /healthz
+    initialDelaySeconds: 5
+    periodSeconds: 15
+  readiness:
+    path: /healthz
+    initialDelaySeconds: 3
+    periodSeconds: 5
+
+# ──────────────────────────────────────────────
+# Security
+# ──────────────────────────────────────────────
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  fsGroup: 101
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
+
+# ──────────────────────────────────────────────
+# Pod settings
+# ──────────────────────────────────────────────
+automountServiceAccountToken: false
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,0 +1,32 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+.cursor/
+*.swp
+*.swo
+*~
+
+# Helm package artifacts
+*.tgz
+charts/*.tgz
+
+# Kustomize build output (local validation)
+build/
+rendered/
+
+# Secrets & credentials (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Local tooling
+.terraform/
+*.tfstate
+*.tfstate.*

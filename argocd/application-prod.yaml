@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: assessment-app-prod
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: assessment-app
+    environment: prod
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/ThierryMoi/devops-assessment-gitops.git
+    targetRevision: main
+    path: overlays/prod
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: assessment-app-prod
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 3m
