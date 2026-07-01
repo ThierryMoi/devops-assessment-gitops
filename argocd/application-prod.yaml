@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: assessment-app-prod
-  namespace: argocd
+  namespace: ci-cd
   labels:
     app.kubernetes.io/part-of: assessment-app
     environment: prod
