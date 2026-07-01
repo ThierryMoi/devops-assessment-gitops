@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: assessment-app-prod
 
 resources:
+  - namespace.yaml
   - ../../base
 
 # Jenkins CI updates newTag after each build

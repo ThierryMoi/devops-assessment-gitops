@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: assessment-app-prod
+  labels:
+    app.kubernetes.io/part-of: assessment-app
+    app.kubernetes.io/managed-by: argocd
+    environment: prod
