@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/name: assessment-app
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
     name: assessment-app
   minReplicas: 3
   maxReplicas: 6

@@ -9,15 +9,14 @@ resources:
   - ../../base
 
 # Jenkins CI updates newTag after each build
-# via: sed -i 's|newTag: "prod-5111c5e3"
+# via: sed -i 's|newTag:.*|newTag: "prod-COMMIT_SHA"|'
 images:
   - name: harbor.jaali.dev/assessment/assessment-app
     newTag: "prod-5111c5e3"
 
 patches:
-  # Prod resources (replicas managed by HPA)
   - target:
-      kind: Deployment
+      kind: Rollout
       name: assessment-app
     patch: |
       - op: replace
@@ -29,10 +28,15 @@ patches:
       - op: replace
         path: /spec/strategy
         value:
-          type: RollingUpdate
-          rollingUpdate:
+          canary:
             maxUnavailable: 0
             maxSurge: 1
+            steps:
+              - setWeight: 20
+              - pause: { duration: 2m }
+              - setWeight: 50
+              - pause: { duration: 2m }
+              - setWeight: 100
       - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
         value: "100m"

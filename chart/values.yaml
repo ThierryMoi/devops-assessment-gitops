@@ -7,16 +7,22 @@ image:
   pullPolicy: IfNotPresent
 
 # ──────────────────────────────────────────────
-# Deployment (production defaults)
+# Rollout (Argo Rollouts canary)
 # ──────────────────────────────────────────────
 replicaCount: 3
 revisionHistoryLimit: 5
 
-strategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxUnavailable: 0
-    maxSurge: 1
+rollout:
+  strategy:
+    canary:
+      maxUnavailable: 0
+      maxSurge: 1
+      steps:
+        - setWeight: 20
+        - pause: { duration: 2m }
+        - setWeight: 50
+        - pause: { duration: 2m }
+        - setWeight: 100
 
 resources:
   requests:

@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: {{ include "assessment-app.fullname" . }}
   labels:
@@ -10,7 +10,7 @@ spec:
   {{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
-    {{- toYaml .Values.strategy | nindent 4 }}
+    {{- toYaml .Values.rollout.strategy | nindent 4 }}
   selector:
     matchLabels:
       {{- include "assessment-app.selectorLabels" . | nindent 6 }}
