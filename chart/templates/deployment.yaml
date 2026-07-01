@@ -5,7 +5,10 @@ metadata:
   labels:
     {{- include "assessment-app.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
     {{- toYaml .Values.strategy | nindent 4 }}
   selector:

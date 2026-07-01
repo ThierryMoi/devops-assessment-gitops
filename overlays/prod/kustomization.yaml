@@ -5,6 +5,7 @@ namespace: assessment-app-prod
 
 resources:
   - namespace.yaml
+  - hpa.yaml
   - ../../base
 
 # Jenkins CI updates newTag after each build
@@ -14,6 +15,7 @@ images:
     newTag: "prod-5111c5e3"
 
 patches:
+  # Prod resources (replicas managed by HPA)
   - target:
       kind: Deployment
       name: assessment-app
@@ -22,8 +24,21 @@ patches:
         path: /spec/replicas
         value: 3
       - op: replace
+        path: /spec/revisionHistoryLimit
+        value: 5
+      - op: replace
+        path: /spec/strategy
+        value:
+          type: RollingUpdate
+          rollingUpdate:
+            maxUnavailable: 0
+            maxSurge: 1
+      - op: replace
         path: /spec/template/spec/containers/0/resources/requests/cpu
         value: "100m"
+      - op: replace
+        path: /spec/template/spec/containers/0/resources/requests/memory
+        value: "64Mi"
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/cpu
         value: "500m"
