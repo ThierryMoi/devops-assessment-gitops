@@ -23,8 +23,7 @@ devops-assessment-gitops/
 │   └── kustomization.yaml
 │
 ├── argocd/
-│   ├── application-prod.yaml    ← App sync (multi-source, auto-sync)
-│   └── application-argo-rollouts.yaml  ← Rollouts controller install
+│   └── application-prod.yaml    ← ArgoCD Application (multi-source, auto-sync)
 │
 ├── chart/                       ← Helm chart v0.4.0 (optional / Harbor OCI)
 │   ├── Chart.yaml
@@ -47,7 +46,7 @@ devops-assessment-gitops/
 |-----------|-------|
 | Cluster Gateway | `jaali-gateway` in `envoy-gateway-system` |
 | ArgoCD namespace | `ci-cd` (not `argocd`) |
-| Argo Rollouts namespace | `argo-rollouts` |
+| Argo Rollouts namespace | `argo-rollouts` (platform prerequisite) |
 | App namespace | `assessment-app-prod` |
 | Hostname | `assessment.jaali.dev` |
 | Image registry | `harbor.jaali.dev/assessment/assessment-app` |
@@ -108,7 +107,7 @@ prod-<8-char-commit-sha>   e.g. prod-a1b2c3d4
 ## Prerequisites
 
 - ArgoCD in `ci-cd` namespace
-- **Argo Rollouts controller** in `argo-rollouts` namespace
+- **Argo Rollouts controller** (platform component, one-time install — not managed by this repo)
 - Envoy Gateway with `jaali-gateway`
 - metrics-server (for HPA)
 - Harbor project `assessment` with cluster pull access
@@ -136,8 +135,12 @@ stringData:
   password: ${GITHUB_TOKEN}
 EOF
 
-# One-time: ArgoCD Applications
-kubectl apply -f argocd/application-argo-rollouts.yaml
+# One-time: Argo Rollouts controller (platform)
+kubectl create namespace argo-rollouts --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -n argo-rollouts -f \
+  https://github.com/argoproj/argo-rollouts/releases/download/v1.8.0/install.yaml
+
+# One-time: ArgoCD Application (this app only)
 kubectl apply -f argocd/application-prod.yaml
 ```
 
@@ -146,7 +149,7 @@ kubectl apply -f argocd/application-prod.yaml
 ```bash
 export KUBECONFIG=/path/to/jaali.yaml
 
-kubectl get application assessment-app-prod argo-rollouts -n ci-cd
+kubectl get application assessment-app-prod -n ci-cd
 kubectl get rollout,hpa,pods -n assessment-app-prod
 kubectl argo rollouts get rollout assessment-app -n assessment-app-prod
 kubectl get referencegrant allow-routes-assessment-app -n envoy-gateway-system
